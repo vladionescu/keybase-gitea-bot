@@ -5,11 +5,19 @@ and publishes those messages to a given conversation (team or person or channel)
 
 Inspired by [keybase/managed-bots gitlabbot](https://github.com/keybase/managed-bots/tree/master/gitlabbot).
 
+## Prerequisites
+
+Keybase
+
+- First ensure the Keybase CLI client is installed and you are logged in with the user the bot will run as.
+- Then add that account as a bot to your team.
+
+Database
+
+- You will need a MySQL-compatible database. It doesn't have to live on the same host as this bot, but it can.
+- Once the db server is set up, run `db_init.sql` to initialize the table Gitea Bot will use.
+
 ## Running
-
-First ensure the Keybase CLI client is installed and you are logged in with the user the bot will run as.
-
-Then add that account as a bot to your team.
 
 1. Build the bot using Go 1.13+, like such (in this directory):
    ```
@@ -28,6 +36,13 @@ Then add that account as a bot to your team.
   ```
   keybase chat api -m '{"method": "clearcommands"}'
   ```
+- You can save your bot secret inside your bot account's private KBFS folder. To do this, create a `credentials.json` file in `/keybase/private/$BOT_USERNAME/` in the following format:
+    ```json
+    {
+      "webhook_secret": "your secret here"
+    }
+    ```
+    If you have KBFS running, you can now run the bot without providing `--secret` command line options.
 - To get the conversation ID (convid) so you can tell this bot where to publish announcements and errors to, look through the list of chats you are in:
   ```
   keybase chat api -p -m '{"method": "list"}' | less
