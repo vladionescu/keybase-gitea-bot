@@ -3,7 +3,7 @@
 Parses incoming webhook notifications from a Gitea server
 and publishes those messages to a given conversation (team or person or channel).
 
-Inspired by (keybase/managed-bots gitlabbot)[https://github.com/keybase/managed-bots/tree/master/gitlabbot].
+Inspired by [keybase/managed-bots gitlabbot](https://github.com/keybase/managed-bots/tree/master/gitlabbot).
 
 ## Running
 
