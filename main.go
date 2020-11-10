@@ -85,10 +85,6 @@ Example:%s
 
 	cmds := []chat1.UserBotCommandInput{
 		{
-			Name:        "gitea echo",
-			Description: "Echo back the user input",
-		},
-		{
 			Name:        "gitea subscribe",
 			Description: "Enable updates from Gitea projects",
 			ExtendedDescription: &chat1.UserBotExtendedDescription{
@@ -110,7 +106,6 @@ Example:%s
 			Name:        "gitea list",
 			Description: "Lists all your subscriptions.",
 		},
-		base.GetFeedbackCommandAdvertisement(s.kbc.GetUsername()),
 	}
 	return kbchat.Advertisement{
 		Alias: "Gitea Bot",
