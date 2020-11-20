@@ -64,8 +64,13 @@ func (h *HTTPSrv) handleWebhook(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		pusher := event.Pusher.FullName
+		if len(pusher) == 0 {
+			pusher = event.Pusher.UserName
+		}
+
 		message = FormatPushMsg(
-			event.Pusher.FullName,
+			pusher,
 			event.Repo.FullName,
 			refToBranch(event.Ref),
 			len(event.Commits),
@@ -106,11 +111,19 @@ func (h *HTTPSrv) handleWebhook(w http.ResponseWriter, r *http.Request) {
 
 		if event.Issue.Assignee != nil {
 			assignee = event.Issue.Assignee.FullName
+			if len(assignee) == 0 {
+				assignee = event.Issue.Assignee.UserName
+			}
+		}
+
+		sender := event.Sender.FullName
+		if len(sender) == 0 {
+			sender = event.Sender.UserName
 		}
 
 		message = FormatIssueMsg(
 			event.Action,
-			event.Sender.FullName,
+			sender,
 			event.Issue.Index,
 			event.Repository.FullName,
 			assignee,
@@ -121,9 +134,14 @@ func (h *HTTPSrv) handleWebhook(w http.ResponseWriter, r *http.Request) {
 		repo = event.Repository.FullName
 		secret = event.Secret
 	case *gitea.IssueCommentPayload:
+		poster := event.Comment.Poster.FullName
+		if len(poster) == 0 {
+			poster = event.Comment.Poster.UserName
+		}
+
 		message = FormatIssueCommentMsg(
 			event.Action,
-			event.Comment.Poster.FullName,
+			poster,
 			event.Issue.Index,
 			event.Repository.FullName,
 			event.Comment.Body,
@@ -134,18 +152,28 @@ func (h *HTTPSrv) handleWebhook(w http.ResponseWriter, r *http.Request) {
 		repo = event.Repository.FullName
 		secret = event.Secret
 	case *gitea.RepositoryPayload:
+		sender := event.Sender.FullName
+		if len(sender) == 0 {
+			sender = event.Sender.UserName
+		}
+
 		message = FormatRepositoryMsg(
 			event.Action,
-			event.Sender.FullName,
+			sender,
 			event.Repository.FullName,
 		)
 
 		repo = event.Repository.FullName
 		secret = event.Secret
 	case *gitea.ReleasePayload:
+		sender := event.Sender.FullName
+		if len(sender) == 0 {
+			sender = event.Sender.UserName
+		}
+
 		message = FormatReleaseMsg(
 			event.Action,
-			event.Sender.FullName,
+			sender,
 			event.Repository.FullName,
 			event.Release.Title,
 			event.Release.TagName,
@@ -159,13 +187,21 @@ func (h *HTTPSrv) handleWebhook(w http.ResponseWriter, r *http.Request) {
 
 		if event.PullRequest.Assignee != nil {
 			assignee = event.PullRequest.Assignee.FullName
+			if len(assignee) == 0 {
+				assignee = event.PullRequest.Assignee.UserName
+			}
 		}
 
 		source := fmt.Sprintf("%s/%s", event.PullRequest.Head.Repository.FullName, event.PullRequest.Head.Name)
 
+		sender := event.Sender.FullName
+		if len(sender) == 0 {
+			sender = event.Sender.UserName
+		}
+
 		message = FormatPullRequestMsg(
 			event.Action,
-			event.Sender.FullName,
+			sender,
 			event.Repository.FullName,
 			event.PullRequest.Index,
 			event.PullRequest.Title,
